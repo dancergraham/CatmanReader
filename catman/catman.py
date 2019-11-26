@@ -43,6 +43,7 @@ class CatmanReader(BinaryReader):
         self.open()
         fileInfo = self._read_header()
         channels = [self._read_chHeader() for i in range(fileInfo['nChannels'])]
+        self.fid.seek(fileInfo['data_offset'])
         for ch in channels:
             ch['data'] = [self.double() for i in range(ch['length'])]
         self.close()
