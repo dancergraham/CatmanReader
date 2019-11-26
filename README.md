@@ -6,7 +6,7 @@ than other format, so it is usefull to read them directly and be able to handle
 this information outside the native software.
 
 This code is an adaptation of a matlab source for the same purpose. The link of
-the source can be found [here](struct://www.mathworks.com/matlabcentral/fileexchange/6780-catman-file-importer).
+the source can be found [here](https://www.mathworks.com/matlabcentral/fileexchange/6780-catman-file-importer).
 
 
 Instalation:
