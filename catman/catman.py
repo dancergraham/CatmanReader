@@ -1,5 +1,5 @@
 from struct import unpack
-from collection import OrderDict
+from collections import OrderDict
 
 class BinaryReader:
     def __init__(self, filename):
