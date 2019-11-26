@@ -13,6 +13,6 @@ setup(
     description = ("Binary reader for Catman v5+ files"),
     license = "MIT",
     keywords = "catman data file reader",
-    packages = 'catman',
-    install_requires=['struct']
+    packages = ['catman'],
+    install_requires=[]
 )
