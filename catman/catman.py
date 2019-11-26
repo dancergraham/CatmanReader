@@ -1,5 +1,5 @@
 from struct import unpack
-from collections import OrderDict
+from collections import OrderedDict
 
 class BinaryReader:
     def __init__(self, filename):
@@ -55,7 +55,7 @@ class CatmanReader(BinaryReader):
     def _read_header(self):
         ''' Read general header of the file '''
 
-        header = OrderDict()
+        header = OrderedDict()
 
         header['version'] = self.short()
         assert (header['version'] > 5010), "Only Catman 5.0+ is supported"
@@ -72,7 +72,7 @@ class CatmanReader(BinaryReader):
 
     def _read_chHeader(self):
         ''' Read the header of one channel '''
-        chInfo = OrderDict()
+        chInfo = OrderedDict()
         chInfo['ID']        = self.short()
         chInfo['length']    = self.integer()
         chInfo['name']      = self.string(self.short())
