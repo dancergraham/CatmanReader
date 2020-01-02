@@ -70,7 +70,7 @@ class CatmanReader(BinaryReader):
         header['reserved']    = [self.string(self.short()) for i in range(32)]
         header['nChannels']   = self.short()
         header['maxChannelLength'] = self.integer()
-        header['chOffet'] = [self.integer() for i in range(header['nChannels'])]
+        header['chOffset'] = [self.integer() for i in range(header['nChannels'])]
         header['redFactor'] = self.integer()
 
         return header
