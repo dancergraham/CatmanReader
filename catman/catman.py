@@ -1,4 +1,4 @@
-from struct import unpack
+from struct import unpack, calcsize
 from collections import OrderedDict
 
 class BinaryReader:
@@ -46,14 +46,22 @@ class CatmanReader(BinaryReader):
         self.open()
         fileInfo = self._read_header()
         channels = [self._read_chHeader() for i in range(fileInfo['nChannels'])]
-        self.fid.seek(fileInfo['data_offset'])
+
+        chBitSize = [ch['length']*calcsize('d') for ch in channels]
+        chDataOffset = [fileInfo['data_offset'] + sum(chBitSize[:i])
+                        for i in range(fileInfo['nChannels'])]
+        fileInfo['chDataOffset'] = chDataOffset
+
         if not self.onlyHeader:
             for n, ch in enumerate(channels):
-                self.fid.seek(fileInfo['chOffset'][n])
+                self.fid.seek(chDataOffset[n])
+                if self.head > 0:
+                    assert (self.head < ch['length']), \
+                        "Head data must be lower than channel length!"
                 chRange = range(ch['length']) if self.head < 0 \
                           else range(self.head)
                 ch['data'] = [self.double() for i in chRange]
-            self.close()
+        self.close()
 
         fileInfo['channels'] = channels
         self.__dict__.update(fileInfo)
