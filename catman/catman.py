@@ -39,9 +39,9 @@ class CatmanReader(BinaryReader):
         self.filename = filename
         self.onlyHeader = onlyHeader
         self.head = head
-        self.Update()
+        self.Update(self.onlyHeader, self.head)
 
-    def Update(self):
+    def Update(self, onlyHeader=0, head=0):
         ''' Reread the entire CATMAN file '''
         self.open()
         fileInfo = self._read_header()
@@ -52,14 +52,14 @@ class CatmanReader(BinaryReader):
                         for i in range(fileInfo['nChannels'])]
         fileInfo['chDataOffset'] = chDataOffset
 
-        if not self.onlyHeader:
+        if not onlyHeader:
             for n, ch in enumerate(channels):
                 self.fid.seek(chDataOffset[n])
-                if self.head > 0:
-                    assert (self.head < ch['length']), \
+                if head > 0:
+                    assert (head < ch['length']), \
                         "Head data must be lower than channel length!"
-                chRange = range(ch['length']) if self.head < 0 \
-                          else range(self.head)
+                chRange = range(ch['length']) if head < 0 \
+                          else range(head)
                 ch['data'] = [self.double() for i in chRange]
         self.close()
 
@@ -105,3 +105,37 @@ class CatmanReader(BinaryReader):
         chInfo['SoDBinfo']  = self.string(self.integer())
 
         return chInfo
+
+
+class SpreadCatmanReader(CatmanReader):
+    def __init__(self, filename, nPoints):
+        self.filename = filename
+        self.nPoints = nPoints
+        self.Update()
+
+    def Update(self):
+        super().Update(onlyHeader=True)
+
+        self.open()
+        for n, ch in enumerate(self.channels):
+            simpleDataPoints = self._getChannelPoints(nChannel=n)
+            ch['data'] = [self._getDataPoint(pos)
+                          for pos in simpleDataPoints]
+        self.close()
+
+    def _getChannelPoints(self, nChannel):
+        ''' Calc the distributed points in the channel '''
+        ch = self.channels[nChannel]
+        chLength = ch['length']*calcsize('d')
+        chDataOffset = self.chDataOffset[nChannel]
+
+        datPositions = list(range(chDataOffset, chDataOffset+chLength, 8))
+        chRate = len(datPositions) // self.nPoints
+
+        return [datPositions[i] for i in range(0, len(datPositions), chRate)]
+
+
+    def _getDataPoint(self, pos):
+        ''' Moves to the position and read the data point '''
+        self.fid.seek(pos)
+        return self.double()
