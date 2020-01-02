@@ -50,7 +50,8 @@ class CatmanReader(BinaryReader):
         if not self.onlyHeader:
             for n, ch in enumerate(channels):
                 self.fid.seek(fileInfo['chOffset'][n])
-                chRange = range(ch['length']) if self.head < 0 else self.head
+                chRange = range(ch['length']) if self.head < 0 \
+                          else range(self.head)
                 ch['data'] = [self.double() for i in chRange]
             self.close()
 
