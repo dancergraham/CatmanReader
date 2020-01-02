@@ -4,11 +4,11 @@ import sys
 
 from setuptools import setup
 
-version = "1.0"
+version = "1.1"
 
 setup(
     name = "CatmanReader",
-    version = "1.0",
+    version = version,
     author = "Carlos Rubio",
     description = ("Binary reader for Catman v5+ files"),
     license = "MIT",
