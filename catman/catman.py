@@ -35,7 +35,7 @@ class BinaryReader:
 
 
 class CatmanReader(BinaryReader):
-    def __init__(self, filename):
+    def __init__(self, filename, onlyHeader=False):
         self.filename = filename
         self.Update()
 
@@ -45,9 +45,10 @@ class CatmanReader(BinaryReader):
         fileInfo = self._read_header()
         channels = [self._read_chHeader() for i in range(fileInfo['nChannels'])]
         self.fid.seek(fileInfo['data_offset'])
-        for ch in channels:
-            ch['data'] = [self.double() for i in range(ch['length'])]
-        self.close()
+        if not onlyHeader:
+            for ch in channels:
+                ch['data'] = [self.double() for i in range(ch['length'])]
+            self.close()
 
         fileInfo['channels'] = channels
         self.__dict__.update(fileInfo)
