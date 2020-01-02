@@ -51,7 +51,7 @@ class CatmanReader(BinaryReader):
             for n, ch in enumerate(channels):
                 self.fid.seek(fileInfo['chOffset'][n])
                 chRange = range(ch['length']) if self.head < 0 else self.head
-                ch['data'] = [self.double() for i in chRange)]
+                ch['data'] = [self.double() for i in chRange]
             self.close()
 
         fileInfo['channels'] = channels
