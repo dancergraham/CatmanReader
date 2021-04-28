@@ -42,5 +42,13 @@ data1 = catman_file.channels[3]['data']
 
 ```
 
-The data is stores in a list with the intention of transform it to more usefull
-format such as `numpy` arrays. 
+The data is stores in a list with the intention of transform it to more useful
+format such as `numpy` arrays or `pandas` DataFrames.
+
+
+Pandas DataFrame:
+------------------------------------------------------------------------------
+
+```python
+df = catman_file.to_DataFrame()
+```
