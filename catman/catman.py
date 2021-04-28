@@ -1,5 +1,8 @@
 from struct import unpack, calcsize
 from collections import OrderedDict
+import warnings
+
+from pandas import DataFrame
 
 class BinaryReader:
     def __init__(self, filename):
@@ -105,6 +108,18 @@ class CatmanReader(BinaryReader):
         chInfo['SoDBinfo']  = self.string(self.integer())
 
         return chInfo
+
+    def to_DataFrame(self):
+        '''Returns a pandas DataFrame containing the channel data'''
+        df = DataFrame()
+        for channel in self.channels:
+            try:
+                df[channel['name']] = channel['data']
+            except ValueError as e:
+                warnings.warn(f'Channel {channel["name"]} skipped\n{e}')
+        df.set_index(df.columns[0], inplace=True)
+        return df
+
 
 
 class SpreadCatmanReader(CatmanReader):
